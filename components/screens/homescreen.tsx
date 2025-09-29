@@ -111,7 +111,7 @@ export const Homescreen = () => {
 
       <View style={styles.productList}>
         <FlatList
-          style={{ flex: 1, paddingHorizontal: 4 }}
+          style={styles.listEntry}
           contentContainerStyle={{ flexGrow: 1 }}
           data={filteredProducts}
           keyExtractor={item => item.id.toString()}

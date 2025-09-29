@@ -31,6 +31,8 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
 
+  listEntry: { flex: 1, paddingHorizontal: 4 },
+
   Entry: {
     display: 'flex',
     justifyContent: 'space-between',
