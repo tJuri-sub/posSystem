@@ -10,7 +10,14 @@ import {
 } from 'react-native';
 import { SearchBar } from '../component/searchBar';
 import { useFocusEffect } from '@react-navigation/native';
-import { getDBConnection, getSales, clearSales } from '../../database';
+import {
+  getDBConnection,
+  getSales,
+  clearSales,
+  getProducts,
+  updateProduct,
+  insertSale,
+} from '../../database';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type GroupedSale = {
@@ -29,7 +36,7 @@ export const Sales = () => {
   const [selectedSale, setSelectedSale] = useState<GroupedSale | null>(null);
   const [tempQuantity, setTempQuantity] = useState(1);
 
-  // ✅ filter the grouped sales by the search text
+  // ✅ Filter the grouped sales by the search text
   const filteredSales = sales.filter(s =>
     s.name.toLowerCase().includes(search.toLowerCase()),
   );
@@ -84,34 +91,97 @@ export const Sales = () => {
     );
   };
 
-  // 🆕 open modal with current item
+  // 🆕 Open modal with current item
   const handleEditQuantity = (item: GroupedSale) => {
     setSelectedSale(item);
     setTempQuantity(item.quantity);
     setModalVisible(true);
   };
 
-  // 🆕 confirm changes
-  const confirmQuantityChange = () => {
+  // 🆕 Confirm changes
+  const confirmQuantityChange = async () => {
     if (!selectedSale) return;
 
-    const updatedSales = sales.map(s => {
-      if (s.id === selectedSale.id) {
-        // adjust total price proportionally
-        const unitPrice = s.totalPrice / s.quantity;
-        return {
-          ...s,
-          quantity: tempQuantity,
-          totalPrice: unitPrice * tempQuantity,
-        };
-      }
-      return s;
-    });
+    try {
+      const db = await getDBConnection();
 
-    setSales(updatedSales);
-    setTotal(updatedSales.reduce((sum, s) => sum + s.totalPrice, 0));
-    setModalVisible(false);
-    setSelectedSale(null);
+      // find product in inventory
+      const products = await getProducts(db);
+      const product = products.find(p => p.name === selectedSale.name);
+      if (!product) {
+        Alert.alert('Error', 'Product not found in inventory.');
+        return;
+      }
+
+      const oldQty = selectedSale.quantity;
+      const newQty = tempQuantity;
+      const diff = oldQty - newQty; // positive => we removed items from sale (return to inventory)
+
+      // DECREASED: return items to inventory and delete corresponding sale rows
+      if (diff > 0) {
+        // update inventory: add back diff
+        await updateProduct(db, {
+          ...product,
+          quantity: product.quantity + diff,
+        });
+
+        // delete `diff` rows from sales table for this product (remove newest entries)
+        const selectRes = await db.executeSql(
+          'SELECT id FROM sales WHERE name = ? ORDER BY id DESC LIMIT ?',
+          [product.name, diff],
+        );
+
+        // ✅ universal SQLite row extraction
+        const rowsArray: any[] = [];
+        const rows = selectRes[0].rows;
+        for (let i = 0; i < rows.length; i++) {
+          rowsArray.push(rows.item(i));
+        }
+
+        const ids = rowsArray.map(r => r.id);
+        if (ids.length > 0) {
+          const placeholders = ids.map(() => '?').join(',');
+          await db.executeSql(
+            `DELETE FROM sales WHERE id IN (${placeholders})`,
+            ids,
+          );
+        }
+      }
+
+      // INCREASED: add more sales (if stock available) and decrease inventory
+      else if (diff < 0) {
+        const increase = -diff;
+        if (product.quantity < increase) {
+          Alert.alert(
+            'Not enough stock',
+            `Only ${product.quantity} left in inventory, cannot add ${increase}.`,
+          );
+          return;
+        }
+
+        // reduce inventory
+        await updateProduct(db, {
+          ...product,
+          quantity: product.quantity - increase,
+        });
+
+        // insert extra sale rows
+        for (let i = 0; i < increase; i++) {
+          await insertSale(db, product);
+        }
+      }
+
+      // reload from DB so groupings/totals are consistent and persistent
+      await loadSales();
+
+      // Close modal & reset
+      setModalVisible(false);
+      setSelectedSale(null);
+      setTempQuantity(1);
+    } catch (error) {
+      console.error('Error updating sale quantity:', error);
+      Alert.alert('Error', 'Failed to update sale. See console for details.');
+    }
   };
 
   return (
@@ -124,7 +194,7 @@ export const Sales = () => {
           style={styles.listEntry}
           contentContainerStyle={{ flexGrow: 1 }}
           data={filteredSales}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.name} // ✅ use name to avoid duplicate keys
           renderItem={({ item }) => (
             <View style={styles.row}>
               <View style={styles.flexEntry}>
@@ -153,11 +223,16 @@ export const Sales = () => {
         </TouchableOpacity>
       </View>
 
+      {/* 🆕 Modal for editing quantity */}
       <Modal
         transparent
         visible={modalVisible}
         animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={() => {
+          setModalVisible(false);
+          setSelectedSale(null);
+          setTempQuantity(1);
+        }}
       >
         <View style={styles.modalBackdrop}>
           <View style={styles.modalContent}>
@@ -186,7 +261,11 @@ export const Sales = () => {
             <View style={styles.modalActions}>
               <TouchableOpacity
                 style={[styles.modalBtn, { backgroundColor: '#aaa' }]}
-                onPress={() => setModalVisible(false)}
+                onPress={() => {
+                  setModalVisible(false);
+                  setSelectedSale(null);
+                  setTempQuantity(1);
+                }}
               >
                 <Text style={styles.modalBtnText}>Cancel</Text>
               </TouchableOpacity>
@@ -204,6 +283,7 @@ export const Sales = () => {
   );
 };
 
+// 🧾 Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -211,7 +291,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: '#F9FBEF',
   },
-
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -221,55 +300,42 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     borderWidth: 1,
   },
-
   total: { fontSize: 20, fontWeight: 'bold' },
-
   itemName: { fontSize: 20 },
-
   itemPrice: { fontSize: 16 },
-
   resetButton: {
     paddingHorizontal: 10,
     paddingVertical: 5,
     backgroundColor: '#B79600',
     borderRadius: 7,
   },
-
   salesList: {
     flex: 1,
     width: '100%',
-
     marginTop: 10,
   },
-
   footer: {
     marginTop: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-
   flexAlign: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   emptyStyle: {
     fontSize: 16,
     textAlign: 'center',
   },
-
   listEntry: { flex: 1, paddingHorizontal: 4 },
-
   flexEntry: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 15,
   },
-
   modalBackdrop: {
     flex: 1,
     justifyContent: 'center',
