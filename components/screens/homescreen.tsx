@@ -121,17 +121,27 @@ export const Homescreen = () => {
             return (
               <View style={styles.Entry}>
                 <View>
-                  <Text style={styles.itemName}>{item.name}</Text>
-                  <Text style={styles.itemPrice}>Price: ₱{item.price}</Text>
-                  <Text
-                    style={[
-                      styles.itemQuantity,
-                      { color: item.quantity <= 0 ? 'red' : 'black' },
-                    ]}
-                  >
-                    Quantity: {item.quantity}
-                    {item.quantity <= 0 && ' (Out of Stock)'}
-                  </Text>
+                  <View style={styles.TextContainer}>
+                    <Text
+                      style={styles.itemName}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      {item.name}
+                    </Text>
+                  </View>
+                  <View style={styles.descriptionPrice}>
+                    <Text style={styles.itemPrice}>Price: ₱{item.price}</Text>
+                    <Text
+                      style={[
+                        styles.itemQuantity,
+                        { color: item.quantity <= 0 ? 'red' : 'black' },
+                      ]}
+                    >
+                      Quantity: {item.quantity}
+                      {item.quantity <= 0 && ' (Out of Stock)'}
+                    </Text>
+                  </View>
                 </View>
 
                 <View style={styles.sideEntryButtons}>
@@ -166,7 +176,7 @@ export const Homescreen = () => {
                     <Ionicons
                       name="add-outline"
                       size={24}
-                      color={item.quantity <= 0 ? '#999' : 'black'}
+                      color={item.quantity <= 0 ? '#999999' : '#FFFFFF'}
                     />
                   </TouchableOpacity>
                 </View>

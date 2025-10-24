@@ -9,7 +9,7 @@ export default StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 10,
 
-    backgroundColor: '#F9FBEF',
+    backgroundColor: '#FBFBFB',
   },
 
   productList: {
@@ -39,26 +39,46 @@ export default StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
 
-    padding: 8,
-    marginBottom: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginBottom: 19,
 
-    backgroundColor: '#dcdbd3ff',
+    backgroundColor: '#FFFFFF',
 
     borderRadius: 7,
-    borderColor: '#222222',
-
-    boxShadow: '1px 1px 3px rgba(0,0,0,0.5)',
+    borderWidth: 1,
+    borderColor: 'hsla(100, 18%, 13%, .1)',
   },
 
   addButton: {
-    backgroundColor: '#B79600',
+    backgroundColor: '#00487C',
     padding: 10,
     borderRadius: 50,
+  },
+
+  TextContainer: {
+    width: 140,
+    borderWidth: 1,
+    borderColor: 'hsla(0,0%,0%,0)',
+    flexWrap: 'wrap',
+    overflow: 'hidden',
   },
 
   itemName: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+
+  descriptionPrice: {
+    width: 140,
+
+    marginTop: 3,
+    paddingVertical: 6,
+    paddingLeft: 6,
+
+    backgroundColor: '#F6F6F6',
+
+    borderRadius: 5,
   },
 
   itemPrice: {
@@ -82,20 +102,27 @@ export default StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+
+    backgroundColor: '#F6F6F6',
+    borderRadius: 30,
   },
 
   quantityButton: {
-    padding: 5,
-    borderWidth: 1,
-    borderRadius: 4,
+    padding: 10,
+
+    borderRadius: '50%',
   },
 
   inputQuantity: {
-    backgroundColor: '#fff',
-    padding: 5,
+    width: 45,
 
-    marginHorizontal: 5,
-    width: 50,
-    borderRadius: 4,
+    padding: 2,
+
+    borderColor: '#EAEAEA',
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+
+    fontSize: 17,
+    textAlign: 'center',
   },
 });
