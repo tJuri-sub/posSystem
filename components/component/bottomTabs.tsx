@@ -53,8 +53,9 @@ export const CustomTabs = () => (
       headerStyle: {
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
+        backgroundColor: '#00487C',
       },
-      headerTintColor: '#00487C',
+      headerTintColor: '#FFFFFF',
       headerTitleStyle: { fontWeight: 'bold' },
       tabBarActiveTintColor: '#00487C',
       tabBarInactiveTintColor: '#00487C',
