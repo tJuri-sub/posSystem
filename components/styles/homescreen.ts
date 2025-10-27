@@ -57,16 +57,21 @@ export default StyleSheet.create({
   },
 
   TextContainer: {
-    width: 140,
-    borderWidth: 1,
-    borderColor: 'hsla(0,0%,0%,0)',
-    flexWrap: 'wrap',
-    overflow: 'hidden',
+    marginBottom: 5,
   },
 
   itemName: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+
+  entryBottomPart: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+
+    width: '100%',
   },
 
   descriptionPrice: {
@@ -124,5 +129,45 @@ export default StyleSheet.create({
 
     fontSize: 17,
     textAlign: 'center',
+  },
+
+  //Modal
+  wrapperModal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+
+  modalContainer: {
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 16,
+  },
+
+  modalHeader: { fontSize: 20, fontWeight: 'bold', marginBottom: 8 },
+
+  actionbtnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+
+  confirmBtn: {
+    backgroundColor: '#00487C',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+
+  confirmBtnText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+
+  cancelBtnText: {
+    color: '#000000',
+    fontSize: 16,
   },
 });
