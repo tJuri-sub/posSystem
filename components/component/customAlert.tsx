@@ -91,6 +91,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'hsla(205, 200%, 24%, .2)',
     overflow: 'hidden',
+
+    boxShadow: '1px 2px 2px hsla(0, 0%, 0%, .2)',
   },
 
   container: {
