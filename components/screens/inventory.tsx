@@ -159,18 +159,13 @@ export const Inventory = () => {
     }
   };
 
-  const handleDeleteProduct = async () => {
-    if (!dbReady || !editingProduct) return;
+  const handleDeleteProduct = async (id: number) => {
+    if (!dbReady) return;
 
     try {
       const db = await getDBConnection();
-      await deleteProduct(db, editingProduct.id);
+      await deleteProduct(db, id); // Pass the id to deleteProduct
       await loadProducts(); // Refresh the list
-
-      // Reset & close modal
-      setAddProductModal(false);
-      setEditingProduct(null);
-      resetForm();
     } catch (error) {
       console.error('Error deleting product:', error);
     }
@@ -186,21 +181,6 @@ export const Inventory = () => {
     <View style={styles.container}>
       <SearchBar value={search} onChangeText={setSearch} />
 
-      {/* Table Header */}
-      <View style={styles.tableHeader}>
-        <View style={[styles.tableFlex, styles.tableWidth1]}>
-          <Text style={styles.tableText}>Product Name</Text>
-        </View>
-
-        <View style={[styles.tableFlex, styles.tableWidth2]}>
-          <Text style={styles.tableText}>Price</Text>
-        </View>
-
-        <View style={[styles.tableFlex, styles.tableWidth3]}>
-          <Text style={styles.tableText}>Quantity</Text>
-        </View>
-      </View>
-
       <View style={styles.tableEntryContainer}>
         <FlatList
           style={styles.listEntry}
@@ -208,43 +188,70 @@ export const Inventory = () => {
           data={filteredProducts}
           keyExtractor={item => item.id.toString()}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.tableEntryButton}
-              onPress={() => {
-                setEditingProduct(item);
-                setProductName(item.name);
-                setPrice(item.price.toString());
-                setQuantity(item.quantity.toString());
-                setAddProductModal(true);
-              }}
-            >
-              <View style={styles.tableHeaderEntry}>
-                <View style={[styles.tableFlex, styles.tableWidth1]}>
-                  <Text style={styles.tableEntryName}>{item.name}</Text>
+            <View style={styles.entryContainer}>
+              <View style={styles.Entry}>
+                <View style={styles.idHeader}>
+                  <Text>{item.id}</Text>
                 </View>
 
-                <View style={[styles.tableFlex, styles.tableWidth2]}>
-                  <Text style={styles.tableEntryText}>₱{item.price}</Text>
-                </View>
+                <View style={styles.flexContainer}>
+                  <View>
+                    <View style={[styles.productNameContainer]}>
+                      <Text style={styles.tableEntryName}>{item.name}</Text>
+                    </View>
 
-                <View style={[styles.tableFlex, styles.tableWidth3]}>
-                  <Text
-                    style={[
-                      styles.tableEntryText,
-                      styles.align,
-                      // Add visual indicators for stock levels
-                      item.quantity <= 0 && { color: 'red' },
-                      item.quantity > 0 &&
-                        item.quantity <= 2 && { color: 'orange' },
-                    ]}
-                  >
-                    {item.quantity}
-                    {item.quantity <= 0 && ' (Out of Stock)'}
-                    {item.quantity > 0 && item.quantity <= 2 && ' (Low Stock)'}
-                  </Text>
+                    <View style={styles.productDescriptionContainer}>
+                      <View style={styles.productPrizeContainer}>
+                        <Text>Prize: </Text>
+                        <Text style={styles.tableEntryText}>₱{item.price}</Text>
+                      </View>
+
+                      <View style={styles.productQuantityContainer}>
+                        <Text>Stock Quantity: </Text>
+                        <Text
+                          style={[
+                            styles.tableEntryText,
+                            styles.align,
+                            // Add visual indicators for stock levels
+                            item.quantity <= 0 && { color: 'red' },
+                            item.quantity > 0 &&
+                              item.quantity <= 2 && { color: 'orange' },
+                          ]}
+                        >
+                          {item.quantity}
+                          {item.quantity <= 0 && ' (Out of Stock)'}
+                          {item.quantity > 0 &&
+                            item.quantity <= 2 &&
+                            ' (Low Stock)'}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  <View style={styles.actionContainer}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setEditingProduct(item);
+                        setProductName(item.name);
+                        setPrice(item.price.toString());
+                        setQuantity(item.quantity.toString());
+                        setAddProductModal(true);
+                      }}
+                    >
+                      <Ionicons
+                        name="create-outline"
+                        size={24}
+                        color="skyblue"
+                      />
+                    </TouchableOpacity>
+
+                    <Pressable onPress={() => handleDeleteProduct(item.id)}>
+                      <Ionicons name="trash-outline" size={24} color="red" />
+                    </Pressable>
+                  </View>
                 </View>
               </View>
-            </TouchableOpacity>
+            </View>
           )}
           ListEmptyComponent={
             <View style={styles.flexAlign}>
@@ -273,7 +280,7 @@ export const Inventory = () => {
           setAddProductModal(true);
         }}
       >
-        <Ionicons name="add-outline" size={35} color="black" />
+        <Ionicons name="add-outline" size={35} color="white" />
       </TouchableOpacity>
 
       {/* Modal */}
@@ -284,11 +291,6 @@ export const Inventory = () => {
               <Text style={styles.headerModal}>
                 {editingProduct ? 'Edit your product' : 'Add your product'}
               </Text>
-              {editingProduct && (
-                <Pressable onPress={handleDeleteProduct}>
-                  <Ionicons name="trash-outline" size={24} color="red" />
-                </Pressable>
-              )}
             </View>
 
             <View style={styles.inputModalContainer}>
