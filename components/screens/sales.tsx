@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
+  Image,
 } from 'react-native';
 import { SearchBar } from '../component/searchBar';
 import { useFocusEffect } from '@react-navigation/native';
@@ -225,7 +226,15 @@ export const Sales = () => {
           )}
           ListEmptyComponent={
             <View style={styles.flexAlign}>
-              <EmptyScreenComponent tab="Sales" />
+              <EmptyScreenComponent
+                tab="Sales"
+                icon={
+                  <Image
+                    source={require('../assets/images/EmptyLogo.png')}
+                    style={{ width: 150, height: 150 }}
+                  />
+                }
+              />
             </View>
           }
         />

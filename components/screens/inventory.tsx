@@ -7,6 +7,7 @@ import {
   Modal,
   TextInput,
   Pressable,
+  Image,
 } from 'react-native';
 import styles from '../styles/inventory';
 import { useFocusEffect } from '@react-navigation/native';
@@ -247,7 +248,15 @@ export const Inventory = () => {
           )}
           ListEmptyComponent={
             <View style={styles.flexAlign}>
-              <EmptyScreenComponent tab="Inventory" />
+              <EmptyScreenComponent
+                tab="Inventory"
+                icon={
+                  <Image
+                    source={require('../assets/images/EmptyLogo.png')}
+                    style={{ width: 150, height: 150 }}
+                  />
+                }
+              />
             </View>
           }
           refreshing={false}

@@ -8,6 +8,7 @@ import {
   Pressable,
   TextInput,
   Modal,
+  Image,
 } from 'react-native';
 import styles from '../../components/styles/homescreen';
 
@@ -234,7 +235,14 @@ export const Homescreen = () => {
           }}
           ListEmptyComponent={
             <View style={styles.flexCenter}>
-              <EmptyScreenComponent />
+              <EmptyScreenComponent
+                icon={
+                  <Image
+                    source={require('../assets/images/EmptyLogo.png')}
+                    style={{ width: 150, height: 150 }}
+                  />
+                }
+              />
             </View>
           }
         />
