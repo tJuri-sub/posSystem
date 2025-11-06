@@ -264,37 +264,42 @@ export const Sales = () => {
               Edit Quantity - {selectedSale?.name}
             </Text>
 
-            <View style={styles.stepperRow}>
+            <View style={styles.multipleQuantity}>
               <TouchableOpacity
-                style={styles.stepperBtn}
+                style={styles.quantityButton}
                 onPress={() => setTempQuantity(q => Math.max(1, q - 1))}
               >
-                <Text style={styles.stepperText}>-</Text>
+                <Ionicons name="remove-outline" size={24} color="black" />
               </TouchableOpacity>
 
-              <Text style={styles.quantityText}>{tempQuantity}</Text>
+              <Text style={styles.inputQuantity}>{tempQuantity}</Text>
 
               <TouchableOpacity
-                style={styles.stepperBtn}
+                style={styles.quantityButton}
                 onPress={() => setTempQuantity(q => q + 1)}
               >
-                <Text style={styles.stepperText}>+</Text>
+                <Ionicons name="add-outline" size={24} color="black" />
               </TouchableOpacity>
             </View>
 
             <View style={styles.modalActions}>
               <TouchableOpacity
-                style={[styles.modalBtn, { backgroundColor: '#aaa' }]}
+                style={[
+                  styles.modalBtn,
+                  { borderColor: '#00487C', borderWidth: 1 },
+                ]}
                 onPress={() => {
                   setModalVisible(false);
                   setSelectedSale(null);
                   setTempQuantity(1);
                 }}
               >
-                <Text style={styles.modalBtnText}>Cancel</Text>
+                <Text style={[styles.modalBtnText, { color: '#000000' }]}>
+                  Cancel
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.modalBtn, { backgroundColor: '#B79600' }]}
+                style={[styles.modalBtn, { backgroundColor: '#00487C' }]}
                 onPress={confirmQuantityChange}
               >
                 <Text style={styles.modalBtnText}>Confirm</Text>

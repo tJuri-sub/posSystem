@@ -103,6 +103,8 @@ export default StyleSheet.create({
 
   listEntry: { flex: 1, paddingHorizontal: 4 },
 
+  // Modal Styles
+
   modalBackdrop: {
     flex: 1,
     justifyContent: 'center',
@@ -115,6 +117,8 @@ export default StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   modalTitle: {
@@ -124,30 +128,42 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
 
-  stepperRow: {
+  multipleQuantity: {
     flexDirection: 'row',
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 15,
+    width: 150,
+
+    backgroundColor: '#F6F6F6',
+    borderRadius: 30,
   },
 
-  stepperBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#B79600',
-    justifyContent: 'center',
-    alignItems: 'center',
+  quantityButton: {
+    padding: 10,
+
+    borderRadius: '50%',
   },
 
-  stepperText: { fontSize: 24, color: '#fff' },
-  quantityText: { fontSize: 20, marginHorizontal: 20 },
+  inputQuantity: {
+    width: 45,
+
+    padding: 2,
+
+    borderColor: '#EAEAEA',
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+
+    fontSize: 17,
+    textAlign: 'center',
+  },
+
   modalActions: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
+    gap: 20,
+    marginTop: 30,
   },
 
-  modalBtn: { paddingVertical: 10, paddingHorizontal: 20, borderRadius: 8 },
+  modalBtn: { paddingVertical: 6, paddingHorizontal: 20, borderRadius: 8 },
   modalBtnText: { color: '#fff', fontSize: 16 },
 });
