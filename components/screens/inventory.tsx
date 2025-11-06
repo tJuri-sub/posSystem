@@ -24,6 +24,7 @@ import {
   deleteInvalidProducts,
   deleteProduct,
 } from '../../database';
+import { EmptyScreenComponent } from '../component/emptyListComponent';
 
 export const Inventory = () => {
   const [addProductModal, setAddProductModal] = useState<boolean>(false);
@@ -246,7 +247,7 @@ export const Inventory = () => {
           )}
           ListEmptyComponent={
             <View style={styles.flexAlign}>
-              <Text>Inventroy Empty.</Text>
+              <EmptyScreenComponent tab="Inventory" />
             </View>
           }
           refreshing={false}

@@ -25,6 +25,7 @@ import {
 } from '../../database';
 import { useFocusEffect } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { EmptyScreenComponent } from '../component/emptyListComponent';
 
 export const Homescreen = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -233,7 +234,7 @@ export const Homescreen = () => {
           }}
           ListEmptyComponent={
             <View style={styles.flexCenter}>
-              <Text style={styles.emptyStyle}>No products found.</Text>
+              <EmptyScreenComponent />
             </View>
           }
         />

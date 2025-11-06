@@ -3,7 +3,6 @@ import {
   View,
   Text,
   FlatList,
-  StyleSheet,
   TouchableOpacity,
   Alert,
   Modal,
@@ -19,6 +18,8 @@ import {
   insertSale,
 } from '../../database';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import styles from '../styles/sales';
+import { EmptyScreenComponent } from '../component/emptyListComponent';
 
 type GroupedSale = {
   id: number;
@@ -196,21 +197,35 @@ export const Sales = () => {
           data={filteredSales}
           keyExtractor={item => item.name} // ✅ use name to avoid duplicate keys
           renderItem={({ item }) => (
-            <View style={styles.row}>
-              <View style={styles.flexEntry}>
-                <Text style={styles.itemName}>
-                  {item.name} x{item.quantity}
-                </Text>
-                <TouchableOpacity onPress={() => handleEditQuantity(item)}>
-                  <Ionicons name="create-outline" size={24} color="skyblue" />
-                </TouchableOpacity>
+            <View style={styles.entry}>
+              <View style={styles.flexContainer}>
+                <View>
+                  <View style={styles.TextContainer}>
+                    <Text style={styles.itemName}>{item.name}</Text>
+                  </View>
+
+                  <View style={styles.descriptionSales}>
+                    <View style={styles.totalQuantityContainer}>
+                      <Text>Total Quantity:</Text>
+                      <Text style={styles.textSales}>{item.quantity}</Text>
+                    </View>
+                    <View style={styles.totalPrizeContainer}>
+                      <Text>Total Prize:</Text>
+                      <Text style={styles.textSales}>₱{item.totalPrice}</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={styles.editButton}>
+                  <TouchableOpacity onPress={() => handleEditQuantity(item)}>
+                    <Ionicons name="create-outline" size={24} color="skyblue" />
+                  </TouchableOpacity>
+                </View>
               </View>
-              <Text style={styles.itemPrice}>₱{item.totalPrice}</Text>
             </View>
           )}
           ListEmptyComponent={
             <View style={styles.flexAlign}>
-              <Text style={styles.emptyStyle}>No sales yet.</Text>
+              <EmptyScreenComponent tab="Sales" />
             </View>
           }
         />
@@ -282,99 +297,3 @@ export const Sales = () => {
     </View>
   );
 };
-
-// 🧾 Styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    backgroundColor: '#F9FBEF',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-    padding: 8,
-    borderRadius: 7,
-    borderWidth: 1,
-  },
-  total: { fontSize: 20, fontWeight: 'bold' },
-  itemName: { fontSize: 20 },
-  itemPrice: { fontSize: 16 },
-  resetButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    backgroundColor: '#B79600',
-    borderRadius: 7,
-  },
-  salesList: {
-    flex: 1,
-    width: '100%',
-    marginTop: 10,
-  },
-  footer: {
-    marginTop: 15,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  flexAlign: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyStyle: {
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  listEntry: { flex: 1, paddingHorizontal: 4 },
-  flexEntry: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 15,
-  },
-  modalBackdrop: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.4)',
-  },
-  modalContent: {
-    width: '80%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  stepperRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 15,
-  },
-  stepperBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#B79600',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  stepperText: { fontSize: 24, color: '#fff' },
-  quantityText: { fontSize: 20, marginHorizontal: 20 },
-  modalActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
-  },
-  modalBtn: { paddingVertical: 10, paddingHorizontal: 20, borderRadius: 8 },
-  modalBtnText: { color: '#fff', fontSize: 16 },
-});
