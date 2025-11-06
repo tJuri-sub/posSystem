@@ -48,6 +48,8 @@ export default StyleSheet.create({
     borderRadius: 7,
     borderWidth: 1,
     borderColor: 'hsla(100, 18%, 13%, .1)',
+
+    boxShadow: '2px 2px 3px hsla(0, 0%, 0%, .2)',
   },
 
   addButton: {
